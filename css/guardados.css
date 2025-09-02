@@ -1,0 +1,353 @@
+/*
+guardados.css — estilos de la UI para:
+- /guardados (lista de mediciones)
+- /ver_medicion_guardada (detalle de una medición guardada)
+- /medicion360 y /ver_medicion360 (comparten componentes)
+/* --------- Reset suave --------- */
+/* Asegura que cualquier [hidden] NO se muestre aunque haya reglas display */
+[hidden] {
+  display: none !important;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  color: #e5eefc;
+  background: radial-gradient(1200px 600px at 20% -20%, #0b1727 10%, transparent 50%),
+    radial-gradient(1000px 800px at 120% 0%, #081121 10%, transparent 45%),
+    #060b14;
+}
+
+/* --------- Título retro --------- */
+.titulo-retro {
+  font-family: 'Press Start 2P', monospace;
+  font-size: clamp(16px, 2.2vw, 22px);
+  color: #7dd3fc;
+  text-shadow: 0 0 12px rgba(125, 211, 252, .35);
+  margin: 0;
+}
+
+/* --------- Topbar --------- */
+.topbar {
+  position: sticky;
+  top: 0;
+  display: grid;
+  grid-template-columns: 160px 1fr 160px;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px;
+  border-bottom: 1px solid rgba(125, 211, 252, .18);
+  background: rgba(3, 10, 24, .8);
+  backdrop-filter: blur(6px);
+  z-index: 10;
+}
+
+.topbar__left,
+.topbar__right {
+  display: flex;
+  gap: 8px;
+}
+
+/* --------- Página --------- */
+.page {
+  max-width: 1200px;
+  margin: 18px auto 48px;
+  padding: 0 16px;
+}
+
+/* --------- Toolbar / buscador --------- */
+.toolbar {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin: 8px 0 18px;
+}
+
+.toolbar__spacer {
+  flex: 1;
+}
+
+.hint {
+  color: #9fb7d6;
+  font-size: 14px;
+}
+
+.searchbox {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: #0b1727;
+  border: 1px solid #1f2a3a;
+  padding: 6px 10px;
+  border-radius: 999px;
+}
+
+.searchbox input {
+  background: transparent;
+  color: #e5eefc;
+  border: none;
+  outline: none;
+  min-width: 220px;
+  font-size: 14px;
+}
+
+.icon-btn {
+  background: #0e1c31;
+  color: #cde6ff;
+  border: 1px solid #193351;
+  border-radius: 999px;
+  padding: 6px 10px;
+  cursor: pointer;
+}
+
+.icon-btn:hover {
+  filter: brightness(1.15);
+}
+
+/* --------- Botones --------- */
+.btn {
+  background: linear-gradient(90deg, #7dd3fc, #38bdf8);
+  color: #0b1220;
+  font-weight: 700;
+  border: 1px solid rgba(56, 189, 248, .6);
+  border-radius: 12px;
+  padding: 9px 14px;
+  cursor: pointer;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 10px 26px rgba(56, 189, 248, .22);
+  transition: transform .15s ease, box-shadow .2s ease, filter .2s ease;
+}
+
+.btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 14px 30px rgba(56, 189, 248, .32);
+}
+
+.btn:active {
+  transform: translateY(0);
+}
+
+.btn-light {
+  background: #0b1727;
+  color: #cfe8ff;
+  border: 1px solid #1f2a3a;
+  box-shadow: none;
+}
+
+.btn-outline {
+  background: transparent;
+  color: #a3d9ff;
+  border: 1px solid #1f2a3a;
+}
+
+.btn-outline:hover {
+  background: #0b1727;
+}
+
+.btn-danger {
+  background: linear-gradient(90deg, #fb7185, #ef4444);
+  color: #fff;
+  border: 1px solid rgba(239, 68, 68, .6);
+  box-shadow: 0 10px 26px rgba(239, 68, 68, .25);
+}
+
+.btn-accent {
+  background: linear-gradient(90deg, #a7f3d0, #34d399);
+  color: #052016;
+  border: 1px solid rgba(52, 211, 153, .6);
+  box-shadow: 0 10px 26px rgba(52, 211, 153, .22);
+}
+
+/* --------- Grid de tarjetas --------- */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 14px;
+}
+
+.card {
+  background: #0b1220;
+  border: 1px solid #1e293b;
+  border-radius: 16px;
+  padding: 14px;
+  box-shadow: 0 14px 36px rgba(2, 6, 23, .25), inset 0 1px 0 rgba(255, 255, 255, .03);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  transition: transform .15s ease, box-shadow .2s ease, border-color .2s ease;
+}
+
+.card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 18px 40px rgba(2, 6, 23, .35);
+  border-color: #263445;
+}
+
+.card__top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.badge {
+  background: #0b1727;
+  color: #cde6ff;
+  border: 1px solid #1f2a3a;
+  padding: 6px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.ts {
+  color: #9fb7d6;
+  font-size: 12px;
+}
+
+.name {
+  font-size: 16px;
+  margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: #e8f2ff;
+}
+
+.meta {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  color: #c2d7f2;
+  font-size: 14px;
+}
+
+.meta b {
+  color: #fff;
+}
+
+.actions {
+  display: grid;
+  /* Auto-ajuste: 3 o 4 botones según tenga “Ver” */
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 8px;
+  margin-top: 4px;
+}
+
+/* --------- Estado vacío --------- */
+.empty {
+  display: grid;
+  place-items: center;
+  margin-top: 24px;
+}
+
+.empty__box {
+  background: #0b1220;
+  border: 1px solid #1e293b;
+  border-radius: 16px;
+  padding: 28px 20px;
+  text-align: center;
+  max-width: 520px;
+  width: 100%;
+  box-shadow: 0 14px 36px rgba(2, 6, 23, .25);
+}
+
+.empty__emoji {
+  font-size: 44px;
+  margin-bottom: 8px;
+}
+
+.empty h2 {
+  margin: 4px 0 8px;
+}
+
+.empty p {
+  margin: 0 0 16px;
+  color: #9fb7d6;
+}
+
+/* --------- Modal --------- */
+.modal {
+  position: fixed;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  z-index: 50;
+}
+
+.modal[hidden] {
+  display: none;
+}
+
+.modal__backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, .6);
+  backdrop-filter: blur(2px);
+}
+
+.modal__card {
+  position: relative;
+  width: min(940px, 92vw);
+  background: #0b1220;
+  border: 1px solid #1e293b;
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow: 0 24px 64px rgba(0, 0, 0, .5);
+}
+
+.modal__head,
+.modal__foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 10px 12px;
+  border-bottom: 1px solid #1e293b;
+}
+
+.modal__foot {
+  border-top: 1px solid #1e293b;
+  border-bottom: none;
+}
+
+.modal__head h3 {
+  margin: 0;
+  font-size: 16px;
+  color: #e8f2ff;
+}
+
+.modal__content {
+  margin: 0;
+  padding: 14px;
+  max-height: min(60vh, 560px);
+  overflow: auto;
+  background: #07101d;
+  color: #cfe8ff;
+  font-size: 13px;
+  border-top: 1px solid #0f1b2c;
+  border-bottom: 1px solid #0f1b2c;
+  white-space: pre-wrap;
+}
+
+/* --------- Responsive --------- */
+@media (max-width: 540px) {
+  .actions {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .actions .btn-danger {
+    grid-column: 1 / -1;
+  }
+}

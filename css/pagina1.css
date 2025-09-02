@@ -1,0 +1,670 @@
+/*
+pagina1.css — estilos de la página de control de medición (/pagina1.html)
+*/
+/* ===== Botón volver ===== */
+.boton-volver {
+  position: fixed;
+  top: 10px;
+  left: 10px;
+  background-color: #007bff;
+  color: white;
+  padding: 10px 15px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background 0.3s ease-in-out;
+}
+
+.boton-volver:hover {
+  background-color: #0056b3;
+}
+
+/* ===== Bloques ocultables ===== */
+#bloque3,
+#bloque4 {
+  display: none;
+  transition: all 0.3s ease-in-out;
+}
+
+/* ===== Tipografías y títulos ===== */
+.titulo {
+  font-family: Arial, sans-serif;
+  font-weight: bolder;
+  text-transform: uppercase;
+  font-size: 250%;
+}
+
+h3 {
+  font-size: 120%;
+}
+
+.colorazultexto {
+  color: #86bad9;
+}
+
+h2 {
+  font-size: 120%;
+  text-transform: none;
+  text-align: justify;
+}
+
+h1 {
+  text-align: center;
+  /* <- corregido (sin comillas) */
+  font-weight: bolder;
+  text-transform: uppercase;
+  font-size: 150%;
+}
+
+.titulo_centrado {
+  text-align: center;
+}
+
+/* ===== Iframe mapa ===== */
+.iframe-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: auto;
+  margin: auto;
+}
+
+/* ===== Barra de navegación ===== */
+.navbar {
+  background-color: rgba(27, 32, 36);
+}
+
+/* ===== Fondo ===== */
+body {
+  font-family: sans-serif;
+  background-image: url("/images/fondo_pag.jpg");
+  background-attachment: fixed;
+  background-position: center;
+  background-color: rgba(235, 225, 225, 0.849);
+}
+
+#enviar {
+  max-height: 40px;
+}
+
+img {
+  width: 80%;
+  height: auto;
+  margin: auto;
+  display: block;
+}
+
+h5 {
+  font-size: 250%;
+}
+
+h4 {
+  font-family: sans-serif;
+  color: rgba(0, 0, 0, 0.767);
+  font-size: 100%;
+  font-weight: bolder;
+}
+
+p {
+  color: white;
+  font-size: 150%;
+}
+
+.espacio {
+  width: auto;
+  height: 50px;
+}
+
+.espacio_1 {
+  width: auto;
+  height: 10px;
+}
+
+.map {
+  align-self: center;
+  margin: 10px;
+  padding: 15px;
+}
+
+#map {
+  height: 500px;
+  max-width: 500px;
+  margin: auto;
+  display: block;
+}
+
+/* ===== Contenedor general ===== */
+#contenedor {
+  margin-top: 50px;
+  margin-bottom: 50px;
+  width: auto;
+}
+
+#caja1 {
+  display: inline-block;
+  width: auto;
+  height: auto;
+  color: azure;
+  text-align: center;
+  margin: auto;
+  display: block;
+}
+
+/* ===== Botones genéricos ===== */
+button {
+  margin-right: 50px;
+  margin-bottom: 30px;
+}
+
+/* ===== Bloques principales ===== */
+.bloque_principal {
+  margin-left: 250px;
+  margin-right: 250px;
+  padding-left: 70px;
+  padding-right: 70px;
+  width: auto;
+  height: auto;
+  background-color: rgba(0, 0, 0, 0.9);
+  color: azure;
+  min-width: 400px;
+  padding-top: 50px;
+}
+
+.bloque_principal_2 {
+  margin-left: 400px;
+  margin-right: 400px;
+  padding-left: 70px;
+  padding-right: 70px;
+  width: auto;
+  height: auto;
+  background-color: rgba(0, 0, 0, 1);
+  color: azure;
+  min-width: 400px;
+  padding-top: 50px;
+}
+
+#icono-animado {
+  width: 200px;
+  height: 200px;
+}
+
+/* ===== Video YouTube (responsive) ===== */
+.videoyt {
+  width: 100%;
+  height: 100%;
+  margin: auto;
+  display: block;
+  position: absolute;
+}
+
+.responsive {
+  width: 100%;
+  height: 0;
+  padding-bottom: 56.25%;
+  position: relative;
+}
+
+/* ===== Responsive bloques ===== */
+@media (max-width:1400px) {
+
+  .bloque_principal,
+  .bloque_principal_2 {
+    margin-left: 150px;
+    margin-right: 150px;
+  }
+}
+
+@media (max-width:1000px) {
+
+  .bloque_principal,
+  .bloque_principal_2 {
+    margin-left: 0;
+    margin-right: 0;
+  }
+}
+
+/* ===== Estilos de galería genérica===== */
+*,
+*:before,
+*:after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.wrapper {
+  max-width: 75rem;
+  padding: 2rem;
+  margin: 0 auto;
+}
+
+.gallery {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(4, 12.5rem);
+  gap: .5rem;
+}
+
+/* ===== Botones con estilo retro ===== */
+.button,
+.button-1,
+.button-2,
+.button-3 {
+  display: inline-block;
+  padding: 5px 15px;
+  font-size: 18px;
+  cursor: pointer;
+  text-align: center;
+  text-decoration: none;
+  outline: none;
+  color: #000;
+  border: 1px solid #000;
+  border-radius: 15px;
+  box-shadow: 0 0 0 2px #000, 0 4px 6px rgba(0, 0, 0, 0.3);
+  transition: box-shadow 0.2s ease, transform 0.2s ease, background-color 0.2s ease;
+}
+
+.button {
+  background-color: #9ebde5;
+}
+
+.button-1 {
+  background-color: #ffffff;
+}
+
+.button-2 {
+  background-color: #a1e178;
+}
+
+.button-3 {
+  background-color: #e16c6c;
+}
+
+
+.button:hover,
+.button-1:hover,
+.button-2:hover,
+.button-3:hover {
+  box-shadow: 0 0 0 2px #000, 0 6px 10px rgba(0, 0, 0, 0.35);
+  transform: scale(1.05);
+}
+
+.button:active,
+.button-1:active,
+.button-2:active,
+.button-3:active {
+  box-shadow: 0 0 0 2px #000, 0 3px 5px rgba(0, 0, 0, 0.3);
+  transform: scale(1.1);
+}
+
+.button:hover {
+  background-color: #478ce6;
+}
+
+.button-1:hover {
+  background-color: #d8e3f1;
+}
+
+.button-2:hover {
+  background-color: #6bb23f;
+}
+
+.button-3:hover {
+  background-color: #e05252;
+}
+
+.button:active {
+  background-color: #1656a9;
+}
+
+.button-1:active {
+  background-color: #a1b1c7;
+}
+
+.button-2:active {
+  background-color: #4f852e;
+}
+
+.button-3:active {
+  background-color: #d23d3d;
+}
+
+/* ===== Texto especial ===== */
+.textoespecial1 {
+  --n: 4;
+  box-sizing: border-box;
+  place-items: center;
+  padding: 5em;
+  background: #eceff2;
+  color: #121212;
+  font-family: 'Roboto Condensed', sans-serif;
+  font-weight: 300;
+  filter: url(#tear);
+}
+
+.titulo-retro {
+  font-family: 'Press Start 2P', cursive;
+  font-size: 32px;
+  color: #bad0ed;
+  text-align: center;
+  text-shadow: 0 0 20px #4d8ee3, 0 0 30px #4d8ee3;
+  letter-spacing: 2px;
+}
+
+.titulo-retro-1 {
+  font-family: 'Press Start 2P';
+  font-size: 18px;
+  color: #80bdf9;
+}
+
+.titulo-retro-2 {
+  font-family: 'Press Start 2P';
+  font-size: 15px;
+  color: #000;
+  text-align: center;
+}
+
+/* ===== Tooltips ===== */
+.btn-with-info {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  position: relative;
+}
+
+.info-btn {
+  width: 22px;
+  height: 22px;
+  border: none;
+  border-radius: 50%;
+  background: #e53935;
+  color: #fff;
+  font-weight: 700;
+  font-size: 14px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: help;
+  padding: 0;
+  outline: none;
+}
+
+.tooltip {
+  position: absolute;
+  top: 0;
+  left: calc(100% + 8px);
+  background: #111;
+  color: #fff;
+  font-size: 13px;
+  line-height: 1.3;
+  padding: 8px 10px;
+  border-radius: 6px;
+  width: max-content;
+  max-width: 300px;
+  white-space: normal;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, .25);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .15s ease;
+  z-index: 10;
+  text-align: justify;
+}
+
+.tooltip::before {
+  content: "";
+  position: absolute;
+  left: -6px;
+  top: 50%;
+  transform: translateY(-50%);
+  border-width: 6px;
+  border-style: solid;
+  border-color: transparent #111 transparent transparent;
+}
+
+.info-btn:hover+.tooltip,
+.info-btn:focus-visible+.tooltip {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* ===== Chips “punto más elevado” (versión simple) ===== */
+.top-details {
+  margin: 8px 0 12px;
+  font-size: 0.95rem;
+}
+
+.top-details .tag {
+  display: inline-block;
+  margin: 4px 6px 0 0;
+  padding: 6px 10px;
+  border-radius: 10px;
+  background: #eef5ff;
+  border: 1px solid #cfe3ff;
+}
+
+.top-details a {
+  text-decoration: none;
+}
+
+/* ===================================================================== */
+/* =================== TARJETA TOP — DISEÑO BONITO ===================== */
+/* ===================================================================== */
+:root {
+  --card-bg: #0b1220;
+  --card-border: #1e293b;
+  --card-text: #e2e8f0;
+  --muted: #94a3b8;
+  --accent: #38bdf8;
+  --accent-soft: rgba(56, 189, 248, .08);
+  --accent-border: rgba(56, 189, 248, .25);
+}
+
+/* Tarjeta centrada */
+.top-card {
+  max-width: 980px;
+  margin: 32px auto;
+  padding: 18px 22px;
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: 18px;
+  box-shadow: 0 12px 32px rgba(2, 6, 23, .25), inset 0 1px 0 rgba(255, 255, 255, .03);
+}
+
+/* Título */
+.top-card__title {
+  font-family: 'Press Start 2P', system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+  text-align: center;
+  color: #7dd3fc;
+  font-size: clamp(18px, 2.5vw, 24px);
+  letter-spacing: .3px;
+  margin: 0 0 14px;
+}
+
+/* Resumen */
+.top-card__summary {
+  text-align: center;
+  font-weight: 600;
+  color: var(--card-text);
+  background: linear-gradient(90deg, var(--accent-soft), transparent);
+  border: 1px solid var(--accent-border);
+  border-radius: 12px;
+  padding: 10px 14px;
+  margin: 10px auto 16px;
+  width: fit-content;
+  max-width: 100%;
+  word-break: break-word;
+}
+
+/* Chips de detalles */
+.top-card__details {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: center;
+  align-items: stretch;
+  /* <- evita que se adapten a otra altura */
+  margin-bottom: 12px;
+}
+
+.top-card__details .tag {
+  display: inline-flex;
+  /* <- para centrar verticalmente el texto */
+  align-items: center;
+  /* <- centra en eje Y */
+  justify-content: center;
+  /* <- centra en eje X */
+  padding: 10px 14px;
+  /* top/bottom iguales */
+  min-height: 40px;
+  /* ALTURA UNIFORME */
+  line-height: 1.1;
+  /* sin “aplastar” tipografía */
+  background: #0b1727;
+  border: 1px solid #1f2a3a;
+  color: #cbd5e1;
+  border-radius: 999px;
+  font-size: 13px;
+}
+
+.top-card__map {
+
+  display: flex;
+  justify-content: center;
+
+}
+
+.map-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 14px;
+  border-radius: 999px;
+  font-weight: 600;
+  font-size: 14px;
+  color: #0b1220;
+  background: linear-gradient(90deg, #7dd3fc, #38bdf8);
+  border: 1px solid rgba(56, 189, 248, .6);
+  box-shadow: 0 6px 18px rgba(56, 189, 248, .25);
+  text-decoration: none;
+  transition: transform .15s ease, box-shadow .2s ease, filter .2s ease;
+}
+
+.map-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 10px 24px rgba(56, 189, 248, .35);
+  filter: saturate(1.1);
+}
+
+/* Galería de fotos (centrada y responsiva) */
+.top-card__photos {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 14px;
+  justify-items: center;
+  align-items: start;
+  margin-top: 8px;
+}
+
+.top-card__photos figure {
+  width: min(100%, 360px);
+  margin: 0;
+  background: #0b1727;
+  border: 1px solid #1f2a3a;
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow: 0 8px 20px rgba(2, 6, 23, .25);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.top-card__photos img {
+  width: 100%;
+  height: 230px;
+  object-fit: cover;
+  display: block;
+  transition: transform .25s ease;
+}
+
+.top-card__photos figure:hover img {
+  transform: scale(1.02);
+}
+
+.top-card__photos figcaption {
+  width: 100%;
+  text-align: center;
+  padding: 10px 12px;
+  font-size: 12px;
+  color: var(--muted);
+  border-top: 1px solid #1f2a3a;
+}
+
+/* Responsive tarjeta */
+@media (max-width: 520px) {
+  .top-card {
+    padding: 14px;
+    border-radius: 16px;
+  }
+
+  .top-card__photos img {
+    height: 180px;
+  }
+}
+
+.btn {
+  background: linear-gradient(90deg, #7dd3fc, #38bdf8);
+  color: #0b1220;
+  font-weight: 700;
+  border: 1px solid rgba(56, 189, 248, .6);
+  border-radius: 12px;
+  padding: 9px 14px;
+  cursor: pointer;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 10px 26px rgba(56, 189, 248, .22);
+  transition: transform .15s ease, box-shadow .2s ease, filter .2s ease;
+  padding: 6px 10px;
+}
+
+.btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 14px 30px rgba(56, 189, 248, .32);
+}
+
+.btn:active {
+  transform: translateY(0);
+}
+
+.btn-light {
+  background: #0b1727;
+  color: #cfe8ff;
+  border: 1px solid #1f2a3a;
+  box-shadow: none;
+}
+
+.btn-outline:hover {
+  background: #0b1727;
+}
+
+.btn-accent {
+  background: linear-gradient(90deg, #a7f3d0, #34d399);
+  color: #052016;
+  border: 1px solid rgba(52, 211, 153, .6);
+  box-shadow: 0 10px 26px rgba(52, 211, 153, .22);
+}
+
+.icon-btn {
+  background: #0e1c31;
+  color: #cde6ff;
+  border: 1px solid #193351;
+  border-radius: 999px;
+  padding: 6px 10px;
+  cursor: pointer;
+}
+
+.icon-btn:hover {
+  color: #cde6ff;
+}

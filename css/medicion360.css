@@ -1,0 +1,320 @@
+/*
+medicion360.css — estilos de la UI para:
+- /ver_medicion_guardada (detalle de una medición guardada)
+- /medicion360 y /ver_medicion360 (comparten componentes)
+/* --------- Reset suave --------- */
+/* Asegura que cualquier [hidden] NO se muestre aunque haya reglas display */
+/* --------- Reset suave --------- */
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  color: #e5eefc;
+  background: radial-gradient(1200px 600px at 20% -20%, #0b1727 10%, transparent 50%),
+    radial-gradient(1000px 800px at 120% 0%, #081121 10%, transparent 45%),
+    #060b14;
+}
+
+/* --------- Título retro --------- */
+.titulo-retro {
+  font-family: 'Press Start 2P', monospace;
+  font-size: clamp(16px, 2.2vw, 22px);
+  color: #7dd3fc;
+  text-shadow: 0 0 12px rgba(125, 211, 252, .35);
+  margin: 0;
+}
+
+/* --------- Topbar --------- */
+.topbar {
+  position: sticky;
+  top: 0;
+  display: grid;
+  grid-template-columns: 160px 1fr 160px;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px;
+  border-bottom: 1px solid rgba(125, 211, 252, .18);
+  background: rgba(3, 10, 24, .8);
+  backdrop-filter: blur(6px);
+  z-index: 10;
+}
+
+/* --------- Página --------- */
+.page {
+  max-width: 1200px;
+  margin: 18px auto 48px;
+  padding: 0 16px;
+}
+
+/* --------- Botones --------- */
+.btn {
+  background: linear-gradient(90deg, #7dd3fc, #38bdf8);
+  color: #0b1220;
+  font-weight: 700;
+  border: 1px solid rgba(56, 189, 248, .6);
+  border-radius: 12px;
+  padding: 9px 14px;
+  cursor: pointer;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 10px 26px rgba(56, 189, 248, .22);
+  transition: transform .15s ease, box-shadow .2s ease, filter .2s ease;
+}
+
+.btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 14px 30px rgba(56, 189, 248, .32);
+}
+
+.btn:active {
+  transform: translateY(0);
+}
+
+.btn-light {
+  background: #0b1727;
+  color: #cfe8ff;
+  border: 1px solid #1f2a3a;
+  box-shadow: none;
+}
+
+.btn-outline {
+  background: transparent;
+  color: #a3d9ff;
+  border: 1px solid #1f2a3a;
+}
+
+.btn-outline:hover {
+  background: #0b1727;
+}
+
+.btn-accent {
+  background: linear-gradient(90deg, #a7f3d0, #34d399);
+  color: #052016;
+  border: 1px solid rgba(52, 211, 153, .6);
+  box-shadow: 0 10px 26px rgba(52, 211, 153, .22);
+}
+
+/* --------- Controles --------- */
+.controls {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 14px;
+  align-items: center;
+  background: #0b1220;
+  border: 1px solid #1e293b;
+  border-radius: 14px;
+  padding: 14px;
+  box-shadow: 0 14px 36px rgba(2, 6, 23, .25);
+}
+
+.controls__left {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+}
+
+.controls__right {
+  text-align: right;
+}
+
+.lbl {
+  color: #9fb7d6;
+  margin-right: 4px;
+}
+
+input#period360 {
+  width: 88px;
+  padding: 8px 10px;
+  border-radius: 10px;
+  border: 1px solid #1f2a3a;
+  background: #0a1627;
+  color: #e5eefc;
+}
+
+/* --------- Radar + mapa debajo --------- */
+.plot-wrap {
+  position: relative;
+  max-width: 720px;
+  margin: 18px auto 10px;
+  aspect-ratio: 1 / 1;
+}
+
+#plot360 {
+  position: relative;
+  z-index: 1;
+  /* por encima del mapa */
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+/* mapa debajo del radar (visible a través del círculo) */
+.map-under {
+  position: absolute;
+  inset: 12px;
+  /* pequeño margen para que no se salga del borde del radar */
+  z-index: 0;
+  opacity: 0;
+  /* empieza oculto */
+  transition: opacity .35s ease, filter .35s ease;
+  clip-path: circle(44% at 50% 50%);
+  -webkit-clip-path: circle(44% at 50% 50%);
+  pointer-events: none;
+  /* sin interacciones cuando está oculto */
+}
+
+.map-under.on {
+  opacity: 1;
+  pointer-events: auto;
+  /* interactuable cuando está visible */
+}
+
+.map-frame {
+  width: 100%;
+  height: 100%;
+  border: 0;
+  background: #0a1424;
+}
+
+/* --------- Lista de guardados --------- */
+.section-title {
+  font-size: 18px;
+  margin: 10px 0 12px;
+  color: #aedaff;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 14px;
+}
+
+.card360 {
+  background: #0b1220;
+  border: 1px solid #1e293b;
+  border-radius: 16px;
+  padding: 14px;
+  box-shadow: 0 14px 36px rgba(2, 6, 23, .25), inset 0 1px 0 rgba(255, 255, 255, .03);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  transition: transform .15s ease, box-shadow .2s ease, border-color .2s ease;
+}
+
+.card360:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 18px 40px rgba(2, 6, 23, .35);
+  border-color: #263445;
+}
+
+.card360__top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.badge {
+  background: #0b1727;
+  color: #cde6ff;
+  border: 1px solid #1f2a3a;
+  padding: 6px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.ts {
+  color: #9fb7d6;
+  font-size: 12px;
+}
+
+.name {
+  font-size: 16px;
+  margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: #e8f2ff;
+}
+
+.meta {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  color: #c2d7f2;
+  font-size: 14px;
+}
+
+.meta b {
+  color: #fff;
+}
+
+.actions {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 8px;
+  margin-top: 4px;
+}
+
+.actions .btn {
+  width: 100%;
+}
+
+/* --------- Estado vacío --------- */
+.empty {
+  display: grid;
+  place-items: center;
+  margin-top: 24px;
+}
+
+.empty__box {
+  background: #0b1220;
+  border: 1px solid #1e293b;
+  border-radius: 16px;
+  padding: 28px 20px;
+  text-align: center;
+  max-width: 520px;
+  width: 100%;
+  box-shadow: 0 14px 36px rgba(2, 6, 23, .25);
+}
+
+.empty__emoji {
+  font-size: 44px;
+  margin-bottom: 8px;
+}
+
+.empty h3 {
+  margin: 4px 0 8px;
+}
+
+.empty p {
+  margin: 0 0 16px;
+  color: #9fb7d6;
+}
+
+/* --------- Responsive --------- */
+@media (max-width: 640px) {
+  .controls {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  .controls__right {
+    text-align: left;
+  }
+
+  .actions {
+    grid-template-columns: repeat(auto-fit, minmax(108px, 1fr));
+  }
+}
