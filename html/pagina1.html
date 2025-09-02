@@ -1,0 +1,373 @@
+<!--
+pagina1.html
+Página principal de control de la medición. Desde aquí puedes: 
+(1) enviar la frecuencia en MHz al equipo activo; 
+(2) iniciar, detener y guardar/borrar una sesión de muestreo que registra fecha/hora, 
+posición GPS, acimut (si existe) y potencia en dBm; 
+(3) ver el log en vivo del proceso; 
+(4) abrir/ocultar los mapas en tiempo real (puntos y calor) generados a partir de las muestras;
+(5) lanzar el análisis con gráficos estáticos e interactivos, eligiendo la paleta de colores. 
+También enlaza a la página de “Medición 360°”. Toda la lógica (peticiones al backend, refrescos 
+de mapas, actualización del análisis y del log) la gestiona /js/pagina1.js; este HTML define la 
+estructura visual y los contenedores.
+-->
+<!doctype html>
+<html lang="es">
+
+<head>
+
+
+  <!--Icono-->
+  <link href="/images/Flag_of_Mallorca.svg" rel="icon">
+
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+
+  <!--CSS-->
+  <link type="text/css" rel="stylesheet" href="/css/pagina1.css">
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+
+  <!--JavaScript-->
+  <script src="/js/pagina1.js" defer></script>
+
+
+  <!--JSON+LD-->
+  <script type="application/ld+json"></script>
+
+  <!--Título dinámico-->
+  <title id="title"></title>
+</head>
+
+<body>
+
+  <!-- Bootstrap  -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p"
+    crossorigin="anonymous"></script>
+
+
+
+  <!--inicio bloque1-->
+  <div class="bloque_principal">
+
+    <!-- Page Content -->
+    <div class="container titulo_contenedor titulo_centrado">
+      <h1 class="titulo-retro mt-4 titulo colorazultexto" id="titulo_museo">Herramienta para búsqueda de Interferencias
+      </h1>
+    </div>
+
+
+
+    <!--Boton para volver a index.html-->
+    <button onclick="location.href='/'" class="boton-volver icon-btn">
+      ⬅ Inicio
+    </button>
+
+    <!--imagen y texto museo-->
+    <div class="espacio"></div>
+
+
+
+    <!--*********************************************************************-->
+
+    <!-- Bloque de “introducción” de la medición -->
+    <div class="bloque1 textoespecial1">
+      <!-- Filtro SVG decorativo -->
+      <svg width="0" height="0" aria-hidden="true">
+        <filter id="tear">
+          <feTurbulence baseFrequency=".999999999999" numOctaves="66" />
+          <feDisplacementMap in="SourceGraphic" scale="1" xChannelSelector="R" />
+          <feOffset dx="-6" dy="-6" />
+          <feComposite in="SourceGraphic" operator="atop" />
+        </filter>
+      </svg>
+
+      <h2 style="text-align: justify;" class="titulo-retro-2" style="font-weight: bold;">
+        Configura la medición y analiza en tiempo real.
+        Define la frecuencia de trabajo y controla el muestreo. Cada punto se registra con fecha/hora, posición GPS,
+        acimut (si está disponible) y potencia (dBm). Utiliza los controles para iniciar, detener y guardar la sesión.
+      </h2>
+    </div>
+
+    <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>Búsqueda frecuencia </title>
+
+
+    </head>
+
+
+    <div class="espacio"></div>
+    <!-- Mostrar valores por defecto de var1  -->
+
+    <!-- ===== FRECUENCIA (envía POST a /cambiar_frecuencia) ===== -->
+    <p class="colorazultexto titulo-retro-1"><b>Introduce Frecuencia en Mhz:</b></p>
+    <input style="font-size: 110%;" type="text" id="inputVariable" placeholder="Introduce frecuencia">
+    <div class=" btn-with-info">
+      <button class="btn" id="cambiarFrecuenciaBtn">Cambiar</button>
+      <p> <span id="valor_var1"></span></p>
+      <br><br>
+      <!-- Tooltip de ayuda -->
+      <button class="info-btn" aria-describedby="tip1" aria-label="Información (mantén el ratón encima)">
+        info
+      </button>
+
+      <span id="tip1" role="tooltip" class="tooltip">
+        Envía la frecuencia central en MHz al equipo activo.
+        Usa punto decimal si lo necesitas (ej.: 433.92). No incluyas letras ni unidades.
+      </span>
+    </div>
+
+
+    <!--*********************************************************************-->
+    <!--final bloque1-->
+  </div>
+  <div class="espacio"></div>
+  <!--inicio bloque2-->
+  <!-- ===== CONTROLES DE MEDICIÓN (llaman /ejecutar-script, /detener-guardar, /detener-borrar) ===== -->
+  <div class="bloque_principal">
+    <div class=" btn-with-info">
+      <p class="colorazultexto titulo-retro-1"> <b>Nuevo muestreo</b></p>
+      <button class="info-btn" aria-describedby="tip1" aria-label="Información (mantén el ratón encima)">
+        info
+      </button>
+
+      <span id="tip1" role="tooltip" class="tooltip">
+        Crea un registro limpio y borra los datos anteriores.
+        Úsalo solo si ya no necesitas los resultados previos.
+      </span>
+    </div>
+
+
+    <!-- Botón para ejecutar el script -->
+    <div class="button-container">
+      <!-- Inicia proceso (stream de logs al textarea) -->
+      <button id="ejecutar" class="btn btn-accent ">Empezar medición</button>
+      <!-- Detiene y guarda en /guardado/save_N(...) -->
+      <button id="detenerGuardar" class="btn ">Detener y guardar medición</button>
+      <!-- Detiene y elimina Potencia.txt (no guarda) -->
+      <button id="detenerBorrar" class="btn ">Detener y borrar medición</button>
+      <!-- Navega a /guardados -->
+      <button id="MedicionesGuardadas" class="btn ">Ver Mediciones guardadas</button>
+
+    </div>
+    <!-- Acceso a la medición 360° -->
+    <div class="button-container">
+      <a href="/medicion360" class="btn ">Medición 360 °</a>
+
+    </div>
+    <div class="espacio"></div>
+
+
+
+    <!-- Área de log en vivo del proceso Python -->
+    <p class="colorazultexto titulo-retro-1"> <b>Información del muestreo </b></p>
+    <div>
+      <textarea id="logArea" rows="6" class="form-control" readonly></textarea>
+    </div>
+
+    <div class="espacio"></div>
+    <!--final bloque2-->
+  </div>
+  <div class="espacio"></div>
+
+  <!-- ===== MAPA DE PUNTOS (usa /map/mapa_puntos.html generado por python/map.py) ===== -->
+  <div class="bloque_principal">
+    <div class=" btn-with-info">
+      <button id="toggleButton" class="button btn ">Mostrar mapa de puntos muestreo ➡</button>
+      <!-- Botón para abrir/cerrar -->
+      <button class="info-btn" aria-describedby="tip1" aria-label="Información (mantén el ratón encima)">
+        info
+      </button>
+
+      <span id="tip1" role="tooltip" class="tooltip">
+        Muestra u oculta el mapa con la ubicación de cada punto medido.
+        Asegúrate de haber realizado al menos una medición para que se vean datos.
+      </span>
+    </div>
+  </div>
+  <!--inicio bloque3-->
+  <div class="bloque_principal" id="bloque3">
+
+    <!-- Fuerza regenerado desde JS con POST /generar-mapa si hace falta -->
+    <button id="actualizarMapa" class="button-1  ">Actualizar mapa en tiempo real</button>
+    <div class="espacio"></div>
+    <div class="iframe-container">
+
+      <iframe id="mapaFrame" src="/map/mapa_puntos.html"
+        style="width: 75%; height: auto; aspect-ratio: 1 / 1; border: none;"></iframe>
+    </div>
+    <div class="espacio"></div>
+    <!--final bloque3-->
+  </div>
+
+  <!-- ===== MAPA DE CALOR (usa /map/mapa_calor.html) ===== -->
+  <div class="bloque_principal ">
+    <div class=" btn-with-info">
+      <button id="toggleButton1" class="button btn ">Mostrar mapa de calor muestreo ➡</button>
+      <!-- Botón para abrir/cerrar -->
+
+      <button class="info-btn" aria-describedby="tip1" aria-label="Información (mantén el ratón encima)">
+        info
+      </button>
+
+      <span id="tip1" role="tooltip" class="tooltip">
+        Muestra u oculta el mapa de calor con la intensidad de señal medida.
+        Si no hay suficientes puntos, el mapa puede no mostrar variaciones claras.
+      </span>
+    </div>
+  </div>
+  <!--inicio bloque4-->
+  <div class="bloque_principal" id="bloque4">
+
+    <button id="actualizarMapa" class="button-1  ">Actualizar mapa en tiempo real</button>
+    <div class="espacio"></div>
+    <div class="iframe-container">
+
+      <iframe id="mapaFrame1" src="/map/mapa_calor.html"
+        style="width: 75%; height: auto; aspect-ratio: 1 / 1; border: none;"></iframe>
+    </div>
+
+    <div class="espacio"></div>
+
+  </div>
+  <div class="espacio"></div>
+  <!--inicio bloque5-->
+  <div class="bloque_principal">
+    <!--*********************************************************************-->
+
+    <div class="espacio"></div>
+
+    <!-- ===== ANÁLISIS (genera PNG + HTML interactivo vía /actualizar_grafico) ===== -->
+    <div class="titulo_centrado">
+      <div class=" btn-with-info">
+        <h1 class="colorazultexto titulo titulo-retro">ANÁLISIS MUESTREO</h1>
+
+        <button class="info-btn" aria-describedby="tip1" aria-label="Información (mantén el ratón encima)">
+          info
+        </button>
+
+        <span id="tip1" role="tooltip" class="tooltip">
+          Abre la sección de análisis con gráficos y estadísticas del muestreo.
+          Asegúrate de haber completado un muestreo para que los datos sean precisos.
+        </span>
+
+      </div>
+    </div>
+
+    <!-------------------------------------------------------------------------->
+    <div class="espacio"></div>
+    <!-- Selector de paleta (se pasa a python/generar_grafico.py) -->
+    <div class="mb-3">
+      <p class="colorazultexto titulo-retro-1">
+        <b>Información del muestreo</b>
+      </p>
+
+      <select id="selectCmap" class="form-select" style="width:auto; min-width:220px;">
+        <option value="inferno" style="color: #fca50a; font-weight: bold;">
+          🟪 morado → amarillo 🟨
+        </option>
+        <option value="inferno_r" style="color: #420a68; font-weight: bold;" selected>
+          🟨 amarillo → morado 🟪
+        </option>
+        <option value="viridis" style="color: #5ec962; font-weight: bold;">
+          🟪 morado → verde 🟩
+        </option>
+        <option value="plasma" style="color: #e16462; font-weight: bold;">
+          🔵 azul → amarillo 🟨
+        </option>
+        <option value="magma" style="color: #de4968; font-weight: bold;">
+          🟪 morado → amarillo claro 🟨
+        </option>
+        <option value="cividis" style="color: #b5b620; font-weight: bold;">
+          🔵 azul oscuro → amarillo pálido 🟨
+        </option>
+        <option value="RdYlGn" style="color: #1a9850; font-weight: bold;">
+          🟥 rojo → verde 🟩
+        </option>
+        <option value="RdYlGn_r" style="color: #a50026; font-weight: bold;">
+          🟩 verde → rojo 🟥
+        </option>
+      </select>
+
+
+      <div class="espacio_1"></div>
+      <div class="espacio_1"></div>
+      <!-- Dispara /actualizar_grafico con la paleta seleccionada -->
+      <button id="actualizarGrafico" class="  button-1">
+        <b>Actualizar Análisis</b>
+      </button>
+    </div>
+
+    <br>
+    <!-- PNG de 4 paneles servido por /grafico -->
+    <img id="grafico" src="/grafico" alt="Análisis de Potencia" style="width: 90%; height: auto;">
+
+    <div class="espacio"></div>
+    <div class="espacio"></div>
+
+    <!-- Interactivo Plotly generado en /analysis/muestreo_interactivo.html -->
+    <p class="colorazultexto titulo-retro-1"><b>Recorrido interactivo del muestreo</b></p>
+
+    <iframe id="iframeInteractivo" src="/analysis/muestreo_interactivo.html"
+      style="width: 90%; height: 620px; border: none;"></iframe>
+
+    <!-- Tarjeta con el punto de mayor potencia + fotos asociadas (snippets) -->
+    <div id="contenedor">
+      <div id="caja1">
+        <div class=" btn-with-info">
+          <h1 class="colorazultexto titulo-retro-1">Punto más elevado del muestreo</h1>
+          <button class="info-btn" aria-describedby="tip1" aria-label="Información (mantén el ratón encima)">
+            info
+          </button>
+
+          <span id="tip1" role="tooltip" class="tooltip">
+            Muestra información sobre el punto con más potencia del muestreo actual.
+          </span>
+        </div>
+
+
+        <!-- Tarjeta TOP centrada -->
+        <div class="top-card" id="topCard">
+
+
+          <div class="top-card__details" id="top_details"></div>
+          <div class="top-card__photos" id="fotos_top"></div>
+        </div>
+
+
+        <div class="espacio"></div>
+
+
+
+
+      </div>
+    </div>
+
+
+    <!-------------------------------------------------------------------------->
+    <!--final bloque2-->
+  </div>
+
+
+  <!--footer-->
+
+  <body class="d-flex flex-column">
+    <div id="page-content">
+      <div class="container text-center">
+        <div class="row justify-content-center">
+        </div>
+      </div>
+    </div>
+    <footer id="sticky-footer" class="flex-shrink-0 py-4 bg-dark text-white-50">
+      <div class="container text-center">
+        <small>Buscador interferencias </small>
+      </div>
+    </footer>
+  </body>
+
+</body>
+
+</html>

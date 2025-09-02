@@ -1,0 +1,187 @@
+<!--
+medicion360.html
+Página para realizar y visualizar una medición 360° “real” con el PR100. 
+La vista muestra un mapa Leaflet y, encima, un lienzo polar con flechas 
+coloreadas por potencia; ambos se actualizan en vivo leyendo del backend 
+(server.py) vía /api/med360/live mientras un proceso Python (python/medicion360.py) 
+consulta al PR100 por SCPI: obtiene GPS, brújula y nivel y los guarda sin 
+inventar datos en txt/medicion360.txt. Los botones Iniciar, Detener y Guardar 
+controlan ese proceso mediante /api/med360/start, /api/med360/stop y /api/med360/save. 
+Abajo se listan mediciones 360° previas almacenadas en /guardado360, con opciones 
+de descargar, ver y eliminar. El estilo y la interacción (tooltip, captura compuesta 
+mapa+gráfico y redimensionado) los gestiona /js/medicion360.js; este HTML sólo define 
+la estructura, enlaces a estilos y librerías, y el contenedor donde se dibujan el 
+mapa y el diagrama polar.
+-->
+
+<!doctype html>
+<html lang="es">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Medición 360°</title>
+  <link rel="icon" href="/images/Flag_of_Mallorca.svg">
+  <link rel="stylesheet" href="/css/guardados.css">
+
+  <!-- Leaflet -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+    integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+  <!-- Exportar Leaflet a canvas -->
+  <script src="https://unpkg.com/leaflet-image/leaflet-image.js"></script>
+
+  <style>
+    .wrap {
+      max-width: 1200px;
+      margin: 18px auto 48px;
+      padding: 0 16px;
+    }
+
+    .panel {
+      background: #0b1220;
+      border: 1px solid #1e293b;
+      border-radius: 14px;
+      padding: 14px;
+      margin-bottom: 14px;
+    }
+
+    .row {
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .label {
+      color: #cfe8ff;
+    }
+
+    .field {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .field input[type="number"] {
+      width: 100px;
+      background: #07101d;
+      border: 1px solid #1e293b;
+      color: #e5eefc;
+      border-radius: 8px;
+      padding: 6px 8px;
+    }
+
+    .status {
+      color: #9fb7d6;
+      font-size: 14px;
+    }
+
+    /* --- pila mapa+gráfico --- */
+    .stack {
+      position: relative;
+      width: min(900px, 100%);
+      aspect-ratio: 1 / 1;
+      /* cuadrado */
+      border: 1px solid #1e293b;
+      border-radius: 12px;
+      overflow: hidden;
+      background: #07101d;
+    }
+
+    #map {
+      position: absolute;
+      inset: 0;
+      z-index: 0;
+    }
+
+    #polarCanvas {
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+      width: 100%;
+      height: 100%;
+    }
+
+    .tooltip {
+      position: absolute;
+      pointer-events: none;
+      z-index: 2;
+      background: rgba(3, 10, 24, .95);
+      color: #e5eefc;
+      border: 1px solid #193351;
+      border-radius: 8px;
+      padding: 8px 10px;
+      font-size: 12px;
+      transform: translate(8px, -8px);
+      white-space: nowrap;
+    }
+
+    /* Lista guardadas */
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 12px;
+    }
+
+    .card .actions {
+      grid-template-columns: 1fr 1fr 1fr;
+    }
+
+    .muted {
+      color: #9fb7d6;
+      font-size: 13px;
+    }
+  </style>
+</head>
+
+<body>
+  <header class="topbar">
+    <div class="topbar__left">
+      <button class="btn btn-light" id="btnBack">⬅ Volver</button>
+    </div>
+    <h1 class="titulo-retro">Medición 360°</h1>
+    <div class="topbar__right">
+
+    </div>
+  </header>
+
+  <main class="wrap">
+    <!-- CONTROLES EN VIVO -->
+    <section class="panel">
+      <h2 class="section-title">Medición en vivo</h2>
+      <div class="row">
+        <div class="field">
+          <label class="label" for="period">Periodo (s)</label>
+          <input id="period" type="number" step="0.1" min="0.1" value="1.0">
+        </div>
+        <button class="btn" onclick="window.location.reload()" id="btnStart">Iniciar</button>
+        <button class="btn btn-danger" id="btnStop">Detener</button>
+        <button class="btn btn-accent" id="btnSave">Guardar medición</button>
+
+      </div>
+      <div class="status" id="liveStatus">—</div>
+
+      <div class="stack" id="stack">
+        <div id="map"></div>
+        <canvas id="polarCanvas"></canvas>
+        <div id="tooltip" class="tooltip" hidden></div>
+      </div>
+    </section>
+
+    <!-- LISTA DE MEDICIONES 360° GUARDADAS -->
+    <section class="panel">
+      <h2 class="section-title">Mediciones 360° guardadas</h2>
+      <div class="row">
+        <button class="btn btn-light" id="btnReloadList">Recargar</button>
+      </div>
+      <div id="list360" class="grid" style="margin-top:10px"></div>
+      <div id="empty360" class="muted" hidden>No hay mediciones 360° guardadas.</div>
+    </section>
+  </main>
+
+  <script src="/js/medicion360.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,91 @@
+# -----------------------------------------------------------------------------
+#   Función: Camara_alternativo.py: Actualmente no se usa 
+# -----------------------------------------------------------------------------
+
+import cv2
+import time
+from datetime import datetime
+import os
+from multiprocessing import Value, Manager
+import asyncio
+#()()()()()()()
+import os
+#()()()()()()()
+manager = Manager()  # Manager para compartir datos entre procesos
+flag_camera = manager.Value("i", 0)  # Crear un valor compartido para la bandera
+
+#async def run_camera():
+def run_camera(flag_camera):
+
+    #crear o limpiar carpeta para guardar imagenes
+    output_dir = 'frames'
+    if os.path.exists(output_dir):
+        #si existe, eliminar lo de dentro de la carpeta
+        for f in os.listdir(output_dir):
+            os.remove(os.path.join(output_dir,f))
+    else:
+        #si no existe, crearla
+        os.makedirs(output_dir)
+
+    #+++++++++La grabacion termina con la tecla "q" +++++++++
+    # Inicializar la webcam HD Pro C920
+    cap = cv2.VideoCapture(0)  # '0' o '1' ir probando para cambiar entre camara por defecto y la instalada
+
+    #alamcenar fechas de toma de capturas paramayor informacion
+    #()()()()()()()
+    #timestamp_file='timestamps.txt'
+    txt_dir = os.path.join(os.path.dirname(__file__), '..', 'txt')  # Ruta a la carpeta 'txt'
+    os.makedirs(txt_dir, exist_ok=True)  # Crea la carpeta si no existe
+
+    timestamp_file = os.path.join(txt_dir, 'timestamps.txt')  # Ruta del archivo
+    #()()()()()()()
+    try:
+        #abrir archivo para guardar timestamps
+        with open(timestamp_file,'w') as f:
+            index = 0  # Inicializar el índice
+            #tomar fotos cada x seg
+            while True:
+                #Leer un fotograma
+                ret, frame=cap.read()
+                if not ret:
+                    print("Error: No se pudo leer el fotograma.")
+                    break
+                
+                #Generar el nombre del archivo con timestamp
+                timestamp=datetime.now().strftime('%Y-%m-%d_%H-%M-%S')
+                frame_filename = os.path.join(output_dir, f'frame_{index}.jpg')
+
+                #guardar el frame como imagen
+                cv2.imwrite(frame_filename,frame)
+                
+                #escribir el timestamp en el archivo
+                f.write(f"{timestamp}\n")
+                
+                # Incrementar el índice
+                index += 1
+                
+                # Cambiar el flag a 1 después de la primera foto
+                if index == 1:
+                    flag_camera.value = 1  # Aquí cambia el valor de la bandera
+                        
+                #espero x seg
+                time.sleep(5)
+                
+                #salir si se presion "q" en el teclado
+                if cv2.waitKey(1) & 0xFF == ord('q'):
+                    break
+                
+                
+    except KeyboardInterrupt:
+        print("Proceso interrumpido")
+        
+    finally:
+
+        # Liberar recursos
+        cap.release()
+        cv2.destroyAllWindows()
+
+#ejecutar de forma asincrona
+#asyncio.run(run_camera(flag_camera))
+#asyncio.run(run_camera())
+

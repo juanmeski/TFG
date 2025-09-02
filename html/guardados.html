@@ -1,0 +1,84 @@
+<!--
+Guardados.html
+Esta página muestra, en formato de cuadrícula, todas las mediciones guardadas 
+del sistema. Al cargarse, el script /js/guardados.js consulta la API (/api/guardados, 
+alias de /api/guardados/list) y pinta tarjetas con el nombre del guardado, el equipo, 
+el tamaño aproximado y la fecha; desde cada tarjeta se pueden abrir los detalles (“Ver”), 
+descargar o eliminar. La barra superior ofrece navegación rápida (Atrás), recarga del listado 
+y acceso directo a la pantalla de medición (“Ir a medir”). El buscador filtra de forma local
+por nombre o equipo y, si no hay registros, se muestra un estado vacío con un botón para 
+comenzar a medir. También se incluye un modal que permite previsualizar el contenido de 
+data.txt y descargarlo. La presentación visual depende de /css/guardados.css y se ha añadido 
+aria-live="polite" en la cuadrícula para mejorar la accesibilidad al anunciar cambios dinámicos.
+-->
+<!doctype html>
+<html lang="es">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Mediciones guardadas</title>
+  <link rel="icon" href="/images/Flag_of_Mallorca.svg">
+  <link rel="stylesheet" href="/css/guardados.css">
+</head>
+
+<body>
+
+  <!-- Barra superior: navegación y acciones rápidas -->
+  <header class="topbar">
+    <div class="topbar__left">
+      <button class="icon-btn" id="btnBack">⬅ Atrás</button>
+      <button class="icon-btn" id="btnReload">↻ Recargar</button>
+    </div>
+    <h1 class="titulo-retro">Guardados</h1>
+    <div class="topbar__right">
+      <button class="btn btn-light" id="goMeasure">Ir a medir</button>
+    </div>
+  </header>
+
+  <main class="page">
+    <!-- Toolbar: buscador y pista de uso -->
+    <div class="toolbar">
+      <div class="searchbox">
+        <input id="q" placeholder="Buscar por nombre o equipo…" autocomplete="off">
+        <button id="clearQ" class="icon-btn">✕</button>
+      </div>
+      <div class="toolbar__spacer"></div>
+      <span class="hint">Click en “Ver” para abrir la medición completa.</span>
+    </div>
+
+    <!-- Contenedor de tarjetas (rellenado por JS) -->
+    <section id="grid" class="grid" aria-live="polite"></section>
+
+    <!-- Estado vacío cuando no hay guardados -->
+    <div id="emptyState" class="empty" hidden>
+      <div class="empty__box">
+        <div class="empty__emoji">🗂️</div>
+        <h2>Sin mediciones aún</h2>
+        <p>Cuando guardes una medición aparecerá aquí.</p>
+        <button class="btn" id="goMeasure2">Ir a medir</button>
+      </div>
+    </div>
+  </main>
+
+  <!-- Modal de previsualización de TXT -->
+  <div id="modal" class="modal" hidden>
+    <div class="modal__backdrop"></div>
+    <div class="modal__card">
+      <div class="modal__head">
+        <h3 id="modalTitle">Previsualización</h3>
+        <button class="icon-btn" id="modalClose">✕</button>
+      </div>
+      <pre id="modalBody" class="modal__content">Cargando…</pre>
+      <div class="modal__foot">
+        <a id="modalDownload" class="btn" href="#" download>Descargar</a>
+        <button class="btn btn-light" id="modalClose2">Cerrar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Lógica de la página (carga y acciones) -->
+  <script src="/js/guardados.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,152 @@
+<!--
+ver_medicion_guardada.html
+Vista para explorar una medición ya guardada. Muestra el nombre del conjunto y ofrece descargas del TXT original 
+(data.txt) y del paquete completo en ZIP. Permite regenerar los gráficos del guardado (llamando al backend) y, 
+cuando están disponibles, incrusta el PNG con los 4 paneles de análisis y el mapa interactivo (Plotly) del 
+propio guardado; además monta una galería con los frames y las capturas asociadas. Si aún no existen los artefactos 
+de análisis, la página intenta crearlos al cargar. Toda la lógica de peticiones y renderizado dinámico está en 
+/js/ver_medicion_guardada.js; este HTML define la estructura, estilos base y contenedores.
+-->
+<!doctype html>
+<html lang="es">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Medición guardada</title>
+
+  <!-- Favicon e interfaz base -->
+  <link rel="icon" href="/images/Flag_of_Mallorca.svg">
+  <link rel="stylesheet" href="/css/guardados.css">
+
+  <!-- Estilos locales de esta vista -->
+  <style>
+    .wrap {
+      max-width: 1200px;
+      margin: 18px auto 48px;
+      padding: 0 16px;
+    }
+
+    .panel {
+      background: #0b1220;
+      border: 1px solid #1e293b;
+      border-radius: 14px;
+      padding: 14px;
+      margin-bottom: 14px;
+    }
+
+    .gallery {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 12px;
+    }
+
+    figure {
+      background: #0b1220;
+      border: 1px solid #1e293b;
+      border-radius: 12px;
+      margin: 0;
+      padding: 10px;
+    }
+
+    figure img {
+      width: 100%;
+      height: auto;
+      display: block;
+      border-radius: 8px;
+    }
+
+    figure figcaption {
+      margin-top: 6px;
+      color: #cfe8ff;
+      font-size: 13px;
+    }
+
+    .inline-actions {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin: 8px 0 0;
+    }
+
+    iframe.graf {
+      width: 100%;
+      height: 600px;
+      border: 1px solid #1e293b;
+      border-radius: 12px;
+      background: #07101d;
+    }
+
+    .note {
+      color: #9fb7d6;
+      font-size: 13px;
+    }
+  </style>
+</head>
+
+<body>
+  <!-- Barra superior: volver, título y acción para regenerar gráficos -->
+  <header class="topbar">
+    <div class="topbar__left">
+      <a class="btn btn-light" id="btnBack" href="/guardados">⬅ Volver</a>
+    </div>
+    <h1 class="titulo-retro" id="title">Medición guardada</h1>
+    <div class="topbar__right">
+      <!-- Lanza /api/guardado/build_graphs desde el JS para rehacer PNG/HTML -->
+      <button class="btn" id="btnRebuild">Regenerar gráficos</button>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <!-- Panel de metadatos y descargas -->
+    <section class="panel">
+      <!-- Nombre y ruta del guardado (rellenado por JS) -->
+      <div class="note" id="infoName"></div>
+      <div class="inline-actions">
+        <!-- Descarga directa del data.txt del guardado -->
+        <a id="btnDownloadCSV" class="btn btn-outline" href="#" download>Descargar TXT</a>
+        <!-- ZIP con todo el contenido del guardado -->
+        <a id="btnDownloadZIP" class="btn btn-outline" href="#">Descargar paquete (ZIP)</a>
+      </div>
+    </section>
+
+    <!-- Panel PNG 4 en 1 generado por python/generar_grafico.py -->
+    <section class="panel">
+      <h2 class="section-title">Gráfico (4 paneles)</h2>
+      <!-- Mensaje de estado mientras no hay imagen -->
+      <div id="pngWrap" class="note">Generando…</div>
+      <!-- Imagen final; el JS asigna el src y la hace visible -->
+      <img id="pngImg" alt="analisis_potencia"
+        style="display:none; max-width:100%; border-radius:12px; border:1px solid #1e293b; background:#07101d;">
+    </section>
+
+    <!-- Panel del interactivo Plotly propio del guardado -->
+    <section class="panel">
+      <h2 class="section-title">Mapa interactivo</h2>
+      <!-- Placeholder de estado mientras no existe el HTML -->
+      <div id="htmlWrap" class="note">Generando…</div>
+      <!-- Se carga /guardado/<name>/analysis/muestreo_interactivo.html -->
+      <iframe id="htmlIfr" class="graf" hidden></iframe>
+
+      <!-- Acceso alternativo en pestaña nueva -->
+      <div class="inline-actions" style="margin-top:10px;">
+        <a class="btn btn-outline" id="btnOpenInteractive2" href="#" target="_blank" rel="noopener">Abrir en pestaña
+          nueva</a>
+      </div>
+    </section>
+
+    <!-- Galería de imágenes: frames (tarjetas) y capturas por muestra -->
+    <section class="panel">
+      <h2 class="section-title">Imágenes (frames y capturas)</h2>
+      <!-- El JS genera <figure> con <img> + <figcaption> por cada archivo -->
+      <div id="galeria" class="gallery"></div>
+      <!-- Nota informativa si no hay imágenes -->
+      <p class="note" id="msgImages" style="margin-top:8px;"></p>
+    </section>
+  </main>
+
+  <!-- Lógica de carga de meta, enlaces y generación de gráficos -->
+  <script src="/js/ver_medicion_guardada.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,51 @@
+{
+  "@context": "http://www.schema.org",
+  "@type": "Menu",
+  "Menu": [
+    {
+      "name": "PR100",
+      "image": "/images/pr100.jpg",
+      "description": "El PR100 es un receptor compacto y portátil diseñado para la detección, localización y análisis de señales en el rango de frecuencia de 9 kHz a 7.5 GHz. Está especialmente diseñado para operaciones de monitoreo móvil y uso en campo, con capacidades de espectro y demodulación.",
+      "sameAs": "https://www.rohde-schwarz.com/es/folleto-ficha-tecnica/pr100/",
+      "commands": [
+        "*IDN?",
+        "DISPlay:IFPan:LEVel:REFerence?",
+        "SENS:DATA? \"VOLT:AC\"",
+        "SYST:GPS:DATA?",
+        "SYST:COMPass:DATA?",
+        "FREQ 200MHz"
+      ]
+    },
+    {
+      "name": "FSH20",
+      "image": "/images/fsh20.jpg",
+      "description": "El FSH20 es un analizador de espectro y redes portátil, ideal para instalaciones de campo, mantenimiento y pruebas de sistemas de comunicación. Forma parte de la familia R&S FSH, conocida por su robustez y precisión.",
+      "sameAs": "https://www.rohde-schwarz.com/es/folleto-ficha-tecnica/fsh/",
+      "commands": ["COMANDO1", "COMANDO2", "COMANDO3"]
+    },
+    {
+      "name": "SIN EQUIPO",
+      "image": "/images/fondo_negro.jpg",
+      "description": "",
+      "sameAs": ""
+    },
+    {
+      "name": "SIN EQUIPO",
+      "image": "/images/fondo_negro.jpg",
+      "description": "",
+      "sameAs": ""
+    },
+    {
+      "name": "SIN EQUIPO",
+      "image": "/images/fondo_negro.jpg",
+      "description": "",
+      "sameAs": ""
+    },
+    {
+      "name": "SIN EQUIPO",
+      "image": "/images/fondo_negro.jpg",
+      "description": "",
+      "sameAs": ""
+    }
+  ]
+}

@@ -1,0 +1,136 @@
+<!--
+ver_medicion360.html
+Esta página muestra una medición 360° ya guardada. Carga el archivo seleccionado, centra un mapa Leaflet
+en la posición GPS (si existe) y superpone un gráfico polar en un <canvas> con la potencia por ángulo.
+También ofrece descargar el TXT original y exportar una captura PNG del estado actual (mapa + gráfico).
+Toda la lógica de lectura, pintado, tooltips y descargas está en /js/ver_medicion360.js; este HTML define
+la estructura visual (cabecera, contadores y el “stack” con mapa y canvas).
+-->
+<!doctype html>
+<html lang="es">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Ver medición 360°</title>
+  <link rel="icon" href="/images/Flag_of_Mallorca.svg">
+  <link rel="stylesheet" href="/css/guardados.css">
+
+  <!-- Leaflet (mapa base) -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+    integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+    <!-- Exportar Leaflet a imagen (para la captura PNG) -->
+  <script src="https://unpkg.com/leaflet-image/leaflet-image.js"></script>
+
+  <style>
+    .wrap {
+      max-width: 1200px;
+      margin: 18px auto 48px;
+      padding: 0 16px;
+    }
+
+    .panel {
+      background: #0b1220;
+      border: 1px solid #1e293b;
+      border-radius: 14px;
+      padding: 14px;
+      margin-bottom: 14px;
+    }
+
+    .row {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .muted {
+      color: #9fb7d6;
+      font-size: 13px;
+    }
+    /* Contenedor apilado: mapa al fondo + canvas polar encima */
+    .stack {
+      position: relative;
+      width: min(900px, 100%);
+      aspect-ratio: 1 / 1;
+      /* cuadrado */
+      border: 1px solid #1e293b;
+      border-radius: 12px;
+      overflow: hidden;
+      background: #07101d;
+    }
+
+    #map {
+      position: absolute;
+      inset: 0;
+      z-index: 0;
+    }
+
+    #polarCanvas {
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+      width: 100%;
+      height: 100%;
+    }
+    /* Tooltip del punto/ángulo bajo el cursor (lo gestiona ver_medicion360.js) */
+    .tooltip {
+      position: absolute;
+      pointer-events: none;
+      z-index: 2;
+      background: rgba(3, 10, 24, .95);
+      color: #e5eefc;
+      border: 1px solid #193351;
+      border-radius: 8px;
+      padding: 8px 10px;
+      font-size: 12px;
+      transform: translate(8px, -8px);
+      white-space: nowrap;
+    }
+  </style>
+</head>
+
+<body>
+  <header class="topbar">
+    <h1 class="titulo-retro">Medición 360° guardada</h1>
+    <div class="topbar__left">
+      <!-- Navegación y utilidades de archivo -->
+      <a class="btn btn-light" href="/medicion360">⬅ Volver</a>
+      <a id="btnTxt" class="btn btn-outline" href="#" download>Descargar TXT</a>
+      <button id="btnDownloadPng" class="btn">Descargar captura</button>
+    </div>
+
+
+
+
+
+
+
+  </header>
+
+  <main class="wrap">
+    <section class="panel">
+      <!-- Resumen del archivo cargado (rellenado por ver_medicion360.js) -->
+      <div class="row">
+        <div class="muted">Archivo: <b id="hName">—</b></div>
+        <div class="muted">Equipo: <b id="hEquipo">—</b></div>
+        <div class="muted">Lat: <b id="hLat">—</b></div>
+        <div class="muted">Lon: <b id="hLon">—</b></div>
+        <div class="muted">Puntos: <b id="hN">—</b></div>
+      </div>
+      <!-- “Stack” visual: mapa Leaflet (fondo) + canvas polar (encima) + tooltip flotante -->
+      <div class="stack" id="stack">
+        <div id="map"></div>
+        <canvas id="polarCanvas"></canvas>
+        <div id="tooltip" class="tooltip" hidden></div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Lógica de carga del TXT, pintado del polar y exportación PNG -->
+  <script src="/js/ver_medicion360.js"></script>
+</body>
+
+</html>

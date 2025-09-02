@@ -1,0 +1,46 @@
+# -----------------------------------------------------------------------------
+#   Función: GPS_alternativo.py: Actualmente no se usa 
+# -----------------------------------------------------------------------------
+
+import serial
+import pynmea2
+import asyncio
+#()()()()()()()
+import os
+#()()()()()()()
+
+# Configura el puerto serie 
+port = 'COM5'  # Cambiar según el sistema operativo
+ser = serial.Serial(port, baudrate=4800, timeout=1)
+
+async def Conectar_GPS(port,ser):
+    while True:
+     try:
+        # Lee una línea de datos NMEA del GPS
+        line = ser.readline().decode('ascii', errors='replace')
+        
+        # Verifica si la línea contiene datos de posición
+        if line.startswith('$GPGGA') or line.startswith('$GPRMC'):
+            # Parsear los datos NMEA
+            msg = pynmea2.parse(line)
+              # Almacena la respuesta en un archivo de texto con la informacion esencial
+             #()()()()()()() 
+            #with open('ubicacion.txt', 'a') as file:
+            txt_dir = os.path.join(os.path.dirname(__file__), '..', 'txt')  # Ruta a la carpeta 'txt'
+            os.makedirs(txt_dir, exist_ok=True)  # Crea la carpeta si no existe
+
+            ubicacion_file = os.path.join(txt_dir, 'ubicacion.txt')  # Ruta del archivo
+
+            with open(ubicacion_file, 'a') as file:  
+            #()()()()()()()
+              file.write(f'{msg.latitude},{msg.longitude}\n')
+          #  print(f"Latitud: {msg.latitude}, Longitud: {msg.longitude}")
+            await asyncio.sleep(5)
+     except pynmea2.ParseError as e:
+        print(f"Error al analizar la línea: {e}")
+     except KeyboardInterrupt:
+        print("Interrumpido por el usuario")
+        break
+    
+#ejecutar de forma asincrona
+asyncio.run(Conectar_GPS(port,ser))
